@@ -4,14 +4,14 @@ namespace AdventOfCode._2024
 {
     internal class Day2 : IDaySolver
     {
-        public long Part1(string[] input)
+        public string Part1(string[] input)
         {
-            return 123;
+            return 123.ToString();
         }
 
-        public long Part2(string[] input)
+        public string Part2(string[] input)
         {
-            return 456;
+            return 456.ToString();
         }
     }
 }

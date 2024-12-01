@@ -4,10 +4,9 @@ namespace AdventOfCode._2024
 {
     internal class Day1 : IDaySolver
     {
-        public long Part1(string[] input)
+        public string Part1(string[] input)
         {
             long result = 0;
-            var tuples = new List<Tuple<int, int>>();
             var leftColumn = new List<int>();
             var rightColumn = new List<int>();
             int lines = 0;
@@ -30,15 +29,13 @@ namespace AdventOfCode._2024
             for (int i = 0; i < lines; i++)
             {
                 result += Math.Abs(leftColumn[i] - rightColumn[i]);
-
             }
-            return result;
+            return result.ToString();
         }
 
-        public long Part2(string[] input)
+        public string Part2(string[] input)
         {
-            long result = 0;
-            var tuples = new List<Tuple<int, int>>();
+
             var leftColumn = new List<int>();
             var rightColumn = new List<int>();
             int lines = 0;
@@ -74,8 +71,7 @@ namespace AdventOfCode._2024
                 }
 
             }
-            return similarity;
+            return similarity.ToString();
         }
-
     }
 }
