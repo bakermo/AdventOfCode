@@ -10,7 +10,6 @@ string fileName = useTest ? $"samples/{year}/Day{day}.txt" : $"inputs/{year}/Day
 
 var input = File.ReadAllLines(fileName);
 
-
 IDaySolver solver = CreateDayInstance(day);
 
 if (mode == RunMode.Both || mode == RunMode.Part1)
@@ -31,7 +30,7 @@ if (mode == RunMode.Both || mode == RunMode.Part2)
     Console.WriteLine();
 }
 
-Console.ReadLine();
+//Console.ReadLine();
 
 IDaySolver CreateDayInstance(int day)
 {
