@@ -16,4 +16,9 @@
 	  </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="inputs\2024\Day3.txt" />
+    <None Remove="samples\2024\Day3.txt" />
+  </ItemGroup>
+
 </Project>

@@ -3,7 +3,7 @@ using System.Reflection;
 
 RunMode mode = RunMode.Both;
 int year = 2024;
-int day = 2;
+int day = 3;
 bool useTest = false;
 
 string fileName = useTest ? $"samples/{year}/Day{day}.txt" : $"inputs/{year}/Day{day}.txt";
