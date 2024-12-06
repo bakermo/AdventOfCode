@@ -1,11 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCode
+﻿namespace AdventOfCode
 {
+    internal class Position : Tuple<int, int>
+    {
+        public int Row { get => Item1; }
+        public int Column { get => Item2; }
+        public Position(int row, int column):base(row, column)
+        {
+        }
+    }
+
+    public enum Direction
+    {
+        Up,
+        Right,
+        Down,
+        Left
+    }
+
     internal class Cross
     {
         public int Row { get; set; }
@@ -16,6 +27,55 @@ namespace AdventOfCode
 
     internal static class Helpers
     {
+        public static Direction TurnRight(this Direction direction)
+        {
+            return (Direction)(((int)direction + 1) % 4);
+        }
+
+        public static Direction TurnLeft(this Direction direction)
+        {
+            return (Direction)(((int)direction + 3) % 4);
+        }
+
+        public static Position GetNextPosition(int row, int col, Direction direction)
+        {
+            if (direction == Direction.Up)
+            {
+                return new Position(row - 1, col);
+            }
+            else if (direction == Direction.Right)
+            {
+                return new Position(row, col + 1);
+            }
+            else if (direction == Direction.Down)
+            {
+                return new Position(row + 1, col);
+            }
+
+            return new Position(row, col - 1);
+        }
+
+        public static Position GetNextPosition(this Position position, Direction direction)
+        {
+            return GetNextPosition(position.Row, position.Column, direction);
+        }
+
+        public static void PrintGrid(this char[,] grid)
+        {
+            var rows = grid.GetLength(0);
+            var cols = grid.GetLength(1);
+            Console.WriteLine();
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    Console.Write(grid[row, col]);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
         public static string Reverse(string input)
         {
             return new string(input.Reverse().ToArray());
@@ -31,7 +91,7 @@ namespace AdventOfCode
             return grid;
         }
 
-        public static char[,] GetGrid(string[] input)
+        public static char[,] GetGrid(this string[] input)
         {
             int rows = input.Length;
             int columns = input[0].Length;
@@ -43,6 +103,27 @@ namespace AdventOfCode
                     grid[row, col] = input[row][col];
                 }
             }
+            return grid;
+        }
+
+        public static bool IsInBounds(this char[,] grid, int row, int col)
+        {
+            return row >= 0 && row < grid.GetLength(0) && col >= 0 && col < grid.GetLength(1);
+        }
+
+        public static char[,] CopyGrid(this char[,] originalGrid)
+        {
+            var rows = originalGrid.GetLength(0);
+            var cols = originalGrid.GetLength(1);
+            var grid = new char[rows, cols];
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < rows; col++)
+                {
+                    grid[row, col] = originalGrid[row, col];
+                }
+            }
+
             return grid;
         }
 
