@@ -20,9 +20,11 @@
     <None Remove="inputs\2024\Day3.txt" />
     <None Remove="inputs\2024\Day4.txt" />
     <None Remove="inputs\2024\Day5.txt" />
+    <None Remove="inputs\2024\Day6.txt" />
     <None Remove="samples\2024\Day3.txt" />
     <None Remove="samples\2024\Day4.txt" />
     <None Remove="samples\2024\Day5.txt" />
+    <None Remove="samples\2024\Day6.txt" />
   </ItemGroup>
 
 </Project>
