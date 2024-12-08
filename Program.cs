@@ -8,7 +8,7 @@ class Program
     {
         RunMode mode = RunMode.Both;
         int year = 2024;
-        int day = 7;
+        int day = 8;
         bool useTest = args.Contains("-t");
 
         string fileName = useTest ? $"samples/{year}/Day{day}.txt" : $"inputs/{year}/Day{day}.txt";
