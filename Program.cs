@@ -8,7 +8,8 @@ class Program
     {
         RunMode mode = RunMode.Both;
         int year = 2024;
-        int day = 8;
+        //int day = 9;
+        int? day = args.Length > 0 ? int.Parse(args[0]) : (int?)null;
         bool useTest = args.Contains("-t");
 
         string fileName = useTest ? $"samples/{year}/Day{day}.txt" : $"inputs/{year}/Day{day}.txt";
@@ -38,12 +39,28 @@ class Program
         //Console.ReadLine();
     }
 
-    static IDaySolver CreateDayInstance(int day)
+    static IDaySolver CreateDayInstance(int? day = null)
     {
-        string className = $"Day{day}";
-        Type dayType = Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .FirstOrDefault(t => t.Name == className && typeof(IDaySolver).IsAssignableFrom(t));
+        Type dayType = null;
+        if (day.HasValue)
+        {
+            dayType = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .FirstOrDefault(t => t.Name == $"Day{day}" && typeof(IDaySolver).IsAssignableFrom(t));
+        }
+        else
+        {
+            dayType = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.Name.StartsWith($"Day") && typeof(IDaySolver).IsAssignableFrom(t))
+                .OrderByDescending(t => int.Parse(t.Name.Substring(3, t.Name.Length - 1)))
+                .FirstOrDefault();
+        }
+        //string className = $"Day{day}";
+        //Type dayType = Assembly.GetExecutingAssembly()
+        //    .GetTypes()
+        //    .FirstOrDefault(t => t.Name == className && typeof(IDaySolver).IsAssignableFrom(t));
+        
 
         if (dayType != null)
         {
