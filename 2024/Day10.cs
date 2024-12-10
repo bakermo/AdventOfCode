@@ -11,58 +11,42 @@ namespace AdventOfCode._2024
         public string Part1(string[] input)
         {
             var grid = input.GetGrid();
-            grid.PrintGrid();
+            //grid.PrintGrid();
 
             var startPositions = GetStartPositions(grid);
-            //foreach (var position in startPositions)
-            //{
-            //    Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
-            //}
-
-            var count = 0;
+            var trailScores = 0;
 
             foreach (var position in startPositions)
             {
-                var foundNines = new Dictionary<Position, HashSet<Position>>();
-                Traverse(grid, position, position, foundNines);
-                foreach (var startingPosition in foundNines)
-                {
-                    count += startingPosition.Value.Count;
-                }
+                var foundTrailEnds = new HashSet<Position>();
+                FindTrailScores(grid, position, foundTrailEnds);
+                var trailScore = foundTrailEnds.Count;
+                //Console.WriteLine("trailScore: {0}", trailScore);
+                trailScores += trailScore;
             }
 
             
 
-            return count.ToString();
+            return trailScores.ToString();
         }
 
         public string Part2(string[] input)
         {
             var grid = input.GetGrid();
-            grid.PrintGrid();
+            //grid.PrintGrid();
 
             var startPositions = GetStartPositions(grid);
-            //foreach (var position in startPositions)
-            //{
-            //    Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
-            //}
-
-            var count = 0;
-
+            var trailRatings = 0;
             foreach (var position in startPositions)
             {
-                var foundNines = new Dictionary<Position, Dictionary<Position, int>>();
-                TraverseV2(grid, position, position, foundNines);
-                foreach (var startingPosition in foundNines)
-                {
-                    var found = startingPosition.Value;
-                    count += found.Sum(x => x.Value);
-                }
+                var foundTrailEnds = new Dictionary<Position, int>();
+                FindTrailRatings(grid, position, foundTrailEnds);
+                var trailRating = foundTrailEnds.Sum(x => x.Value);
+                //Console.WriteLine("trailRating: {0}", trailRating);
+                trailRatings += trailRating;
             }
 
-
-
-            return count.ToString();
+            return trailRatings.ToString();
         }
 
         private List<Position> GetStartPositions(char[,] grid)
@@ -80,14 +64,18 @@ namespace AdventOfCode._2024
                 }
             }
 
+            //foreach (var position in startPositions)
+            //{
+            //    Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
+            //}
             return positions;
         }
 
-        private void Traverse(char[,] grid, Position startPosition, Position originalStartingPosition, 
-            Dictionary<Position, HashSet<Position>> foundNines)
+        private void FindTrailScores(char[,] grid, Position startPosition,
+            HashSet<Position> foundTrailEnds)
         {
             var value = int.Parse(grid[startPosition.Row, startPosition.Column].ToString());
-            var testPositions = new List<Position>(value);
+            var testPositions = new List<Position>();
             testPositions.Add(startPosition.GetNextPosition(Direction.Up));
             testPositions.Add(startPosition.GetNextPosition(Direction.Down));
             testPositions.Add(startPosition.GetNextPosition(Direction.Left));
@@ -106,34 +94,22 @@ namespace AdventOfCode._2024
                     {
                         if (nextValue == 9)
                         {
-                            //Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
-                            if (foundNines.ContainsKey(originalStartingPosition))
-                            {
-                                foundNines[originalStartingPosition].Add(position);
-                            }
-                            else
-                            {
-                                var positionsFound = new HashSet<Position>();
-                                positionsFound.Add(position);
-                                foundNines.Add(originalStartingPosition, positionsFound);
-                            }
+                            foundTrailEnds.Add(position);
                             //return;
                         }
                         else
                         {
-                            Traverse(grid, position, originalStartingPosition, foundNines);
+                            FindTrailScores(grid, position, foundTrailEnds);
                         }
-
                     }
                 }
             }
         }
 
-        private void TraverseV2(char[,] grid, Position startPosition, Position originalStartingPosition,
-            Dictionary<Position, Dictionary<Position, int>> foundNines)
+        private void FindTrailRatings(char[,] grid, Position startPosition, Dictionary<Position, int> foundTrailEnds)
         {
             var value = int.Parse(grid[startPosition.Row, startPosition.Column].ToString());
-            var testPositions = new List<Position>(value);
+            var testPositions = new List<Position>();
             testPositions.Add(startPosition.GetNextPosition(Direction.Up));
             testPositions.Add(startPosition.GetNextPosition(Direction.Down));
             testPositions.Add(startPosition.GetNextPosition(Direction.Left));
@@ -152,32 +128,19 @@ namespace AdventOfCode._2024
                     {
                         if (nextValue == 9)
                         {
-                            //Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
-                            if (foundNines.ContainsKey(originalStartingPosition))
+                            if (foundTrailEnds.ContainsKey(position))
                             {
-                                var found = foundNines[originalStartingPosition];
-                                if (found.ContainsKey(position))
-                                {
-                                    found[position]++;
-                                }
-                                else
-                                {
-                                    found.Add(position, 1);
-                                }
+                                foundTrailEnds[position]++;
                             }
                             else
                             {
-                                var positionsFound = new Dictionary<Position, int>();
-                                positionsFound.Add(position, 1);
-                                foundNines.Add(originalStartingPosition, positionsFound);
+                                foundTrailEnds.Add(position, 1);
                             }
-                            //return;
                         }
                         else
                         {
-                            TraverseV2(grid, position, originalStartingPosition, foundNines);
+                            FindTrailRatings(grid, position, foundTrailEnds);
                         }
-
                     }
                 }
             }
