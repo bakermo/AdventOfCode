@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <None Remove="inputs\2024\Day10.txt" />
+    <None Remove="inputs\2024\Day11.txt" />
     <None Remove="inputs\2024\Day3.txt" />
     <None Remove="inputs\2024\Day4.txt" />
     <None Remove="inputs\2024\Day5.txt" />
@@ -26,6 +27,7 @@
     <None Remove="inputs\2024\Day8.txt" />
     <None Remove="inputs\2024\Day9.txt" />
     <None Remove="samples\2024\Day10.txt" />
+    <None Remove="samples\2024\Day11.txt" />
     <None Remove="samples\2024\Day3.txt" />
     <None Remove="samples\2024\Day4.txt" />
     <None Remove="samples\2024\Day5.txt" />
