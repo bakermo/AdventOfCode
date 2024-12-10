@@ -111,6 +111,28 @@
             return row >= 0 && row < grid.GetLength(0) && col >= 0 && col < grid.GetLength(1);
         }
 
+        public static List<Position> GetStartPositions(this char[,] grid, char startValue)
+        {
+            var positions = new List<Position>();
+            for (int row = 0; row < grid.GetLength(0); row++)
+            {
+                for (int col = 0; col < grid.GetLength(1); col++)
+                {
+                    var value = grid[row, col];
+                    if (value == startValue)
+                    {
+                        positions.Add(new Position(row, col));
+                    }
+                }
+            }
+
+            //foreach (var position in startPositions)
+            //{
+            //    Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
+            //}
+            return positions;
+        }
+
         public static char[,] CopyGrid(this char[,] originalGrid)
         {
             var rows = originalGrid.GetLength(0);

@@ -13,7 +13,7 @@ namespace AdventOfCode._2024
             var grid = input.GetGrid();
             //grid.PrintGrid();
 
-            var startPositions = GetStartPositions(grid);
+            var startPositions = grid.GetStartPositions('0');
             var trailScores = 0;
 
             foreach (var position in startPositions)
@@ -35,7 +35,7 @@ namespace AdventOfCode._2024
             var grid = input.GetGrid();
             //grid.PrintGrid();
 
-            var startPositions = GetStartPositions(grid);
+            var startPositions = grid.GetStartPositions('0');
             var trailRatings = 0;
             foreach (var position in startPositions)
             {
@@ -47,28 +47,6 @@ namespace AdventOfCode._2024
             }
 
             return trailRatings.ToString();
-        }
-
-        private List<Position> GetStartPositions(char[,] grid)
-        {
-            var positions = new List<Position>();
-            for (int row = 0; row < grid.GetLength(0); row++)
-            {
-                for (int col = 0; col < grid.GetLength(1); col++)
-                {
-                    var value = int.TryParse(grid[row, col].ToString(), out int result);
-                    if (value && result == 0)
-                    {
-                        positions.Add(new Position(row, col));
-                    }
-                }
-            }
-
-            //foreach (var position in startPositions)
-            //{
-            //    Console.WriteLine("Row: {0}, Col: {1}", position.Row, position.Column);
-            //}
-            return positions;
         }
 
         private void FindTrailScores(char[,] grid, Position startPosition,
