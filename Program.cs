@@ -10,7 +10,7 @@ class Program
         int year = 2024;
         int day = 10;
         //int? day = args.Length > 0 ? int.Parse(args[0]) : (int?)null;
-        bool useTest = args.Contains("-t");
+        bool useTest =  args.Contains("-t");
 
         string fileName = useTest ? $"samples/{year}/Day{day}.txt" : $"inputs/{year}/Day{day}.txt";
 
