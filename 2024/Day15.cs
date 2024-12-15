@@ -28,10 +28,10 @@ namespace AdventOfCode._2024
             }
 
             var grid = gridLines.ToArray().GetGrid();
-            grid.PrintGrid();
+            //grid.PrintGrid();
             string directionStream = Regex.Replace(string.Join("", directionLines), @"\t|\n|\r", "");
             
-            Console.WriteLine(directionStream);
+            //Console.WriteLine(directionStream);
 
             var directions = new Queue<char>(directionStream);
 
@@ -59,7 +59,7 @@ namespace AdventOfCode._2024
                         break;
                 }
 
-                currentPosition = Push(grid, currentPosition, direction);
+                currentPosition = PushBoxes(grid, currentPosition, direction);
 
                 //grid.PrintGrid();
 
@@ -70,7 +70,7 @@ namespace AdventOfCode._2024
 
         public string Part2(string[] input)
         {
-            return 0.ToString();
+            //return 0.ToString();
             var gridLines = new List<string>();
             var directionLines = new List<string>();
             bool isGrid = true;
@@ -103,10 +103,6 @@ namespace AdventOfCode._2024
             Console.WriteLine(directionStream);
 
             var directions = new Queue<char>(directionStream);
-            foreach (var direction in directionStream)
-            {
-                //directions.Append(direction);
-            }
 
             var startPostion = grid.GetStartPositions('@').First();
             var currentPosition = startPostion;
@@ -132,15 +128,15 @@ namespace AdventOfCode._2024
                         break;
                 }
 
-                currentPosition = Push(grid, currentPosition, direction);
+                currentPosition = PushLargeBoxes(grid, currentPosition, direction);
 
-                //grid.PrintGrid();
+               // grid.PrintGrid();
             }
 
             return GetGridScore(grid).ToString();
         }
 
-        private Position Push(char[,] grid, Position currentPosition, Direction direction)
+        private Position PushLargeBoxes(char[,] grid, Position currentPosition, Direction direction)
         {
             var currentUnit = grid[currentPosition.Row, currentPosition.Column];
 
@@ -149,22 +145,51 @@ namespace AdventOfCode._2024
             {
                 if (IsLargeBoxLeft(grid, nextPosition))
                 {
-                    Push(grid, nextPosition, direction);
-                    Push(grid, nextPosition.GetNextPosition(Direction.Right), direction);
+                    PushBoxes(grid, nextPosition, direction);
+                    if (direction == Direction.Up || direction == Direction.Down)
+                    {
+                        PushBoxes(grid, nextPosition.GetNextPosition(Direction.Right), direction);
+                    }
                 }
 
                 if (IsLargeBoxRight(grid, nextPosition))
                 {
-                    Push(grid, nextPosition, direction);
-                    Push(grid, nextPosition.GetNextPosition(Direction.Left), direction);
+                    PushBoxes(grid, nextPosition, direction);
+                    if (direction == Direction.Up || direction == Direction.Down)
+                    {
+                        PushBoxes(grid, nextPosition.GetNextPosition(Direction.Left), direction);
+                    }
                 }
 
                 if (IsBox(grid, nextPosition))
                 {
-                    Push(grid, nextPosition, direction);
+                    PushBoxes(grid, nextPosition, direction);
                 }
 
                 if (!IsWall(grid, nextPosition) && !IsBox(grid, nextPosition) && !IsLargeBox(grid, nextPosition))
+                {
+                    grid[nextPosition.Row, nextPosition.Column] = currentUnit;
+                    grid[currentPosition.Row, currentPosition.Column] = '.';
+                    currentPosition = nextPosition;
+                }
+            }
+
+            return currentPosition;
+        }
+
+        private Position PushBoxes(char[,] grid, Position currentPosition, Direction direction)
+        {
+            var currentUnit = grid[currentPosition.Row, currentPosition.Column];
+
+            var nextPosition = currentPosition.GetNextPosition(direction);
+            if (grid.IsInBounds(nextPosition.Row, nextPosition.Column))
+            {
+                if (IsBox(grid, nextPosition))
+                {
+                    PushBoxes(grid, nextPosition, direction);
+                }
+
+                if (!IsWall(grid, nextPosition) && !IsBox(grid, nextPosition))
                 {
                     grid[nextPosition.Row, nextPosition.Column] = currentUnit;
                     grid[currentPosition.Row, currentPosition.Column] = '.';
