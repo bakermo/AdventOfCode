@@ -70,6 +70,7 @@ namespace AdventOfCode._2024
 
         public string Part2(string[] input)
         {
+            //1473203 // too high
             //return 0.ToString();
             var gridLines = new List<string>();
             var directionLines = new List<string>();
@@ -110,8 +111,8 @@ namespace AdventOfCode._2024
             {
                 Direction direction = Direction.Up;
                 var d = directions.Dequeue();
-                //Console.WriteLine(d);
-
+               // Console.WriteLine(d);
+               // Console.ReadLine();
                 switch (d)
                 {
                     case '^':
@@ -130,46 +131,138 @@ namespace AdventOfCode._2024
 
                 currentPosition = PushLargeBoxes(grid, currentPosition, direction);
 
-               // grid.PrintGrid();
+              // grid.PrintGrid();
             }
+
+            grid.PrintGrid();
 
             return GetGridScore(grid).ToString();
         }
 
-        private Position PushLargeBoxes(char[,] grid, Position currentPosition, Direction direction)
+        private Position PushLargeBoxes(char[,] grid, Position currentPosition, Direction direction, Position? tetheredPosition = null)
         {
             var currentUnit = grid[currentPosition.Row, currentPosition.Column];
+            char? tetheredUnit = null;
 
             var nextPosition = currentPosition.GetNextPosition(direction);
+            Position nextTetheredPosition = null;
+            if (tetheredPosition != null)
+            {
+                nextTetheredPosition = tetheredPosition.GetNextPosition(direction);
+                tetheredUnit = grid[tetheredPosition.Row, tetheredPosition.Column];
+            }
+
             if (grid.IsInBounds(nextPosition.Row, nextPosition.Column))
             {
                 if (IsLargeBoxLeft(grid, nextPosition))
                 {
-                    PushBoxes(grid, nextPosition, direction);
                     if (direction == Direction.Up || direction == Direction.Down)
                     {
-                        PushBoxes(grid, nextPosition.GetNextPosition(Direction.Right), direction);
+                        var currentAdjacentPosition = nextPosition.GetNextPosition(Direction.Right);
+                        //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
+                        //if (currentAdjacentPosition != updatedAdjacentPosition)
+                        //{
+                        //    PushLargeBoxes(grid, nextPosition, direction);
+                        //}
+                        PushLargeBoxes(grid, nextPosition, direction, currentAdjacentPosition);
+                        //if (nextTetheredPosition != null)
+                        //{
+                        //    PushLargeBoxes(grid, nextTetheredPosition, direction);
+                        //}
+                    }
+                    else
+                    {
+                        PushLargeBoxes(grid, nextPosition, direction);
                     }
                 }
+
 
                 if (IsLargeBoxRight(grid, nextPosition))
                 {
-                    PushBoxes(grid, nextPosition, direction);
                     if (direction == Direction.Up || direction == Direction.Down)
                     {
-                        PushBoxes(grid, nextPosition.GetNextPosition(Direction.Left), direction);
+                        var currentAdjacentPosition = nextPosition.GetNextPosition(Direction.Left);
+                        //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
+                        //if (currentAdjacentPosition != updatedAdjacentPosition)
+                        //{
+                        //    PushLargeBoxes(grid, nextPosition, direction);
+                        //}
+                        PushLargeBoxes(grid, nextPosition, direction, currentAdjacentPosition);
+                        //if (nextTetheredPosition != null)
+                        //{
+                        //    PushLargeBoxes(grid, nextTetheredPosition, direction);
+                        //}
+                    }
+                    else
+                    {
+                        PushLargeBoxes(grid, nextPosition, direction);
                     }
                 }
-
-                if (IsBox(grid, nextPosition))
+                
+                if (nextTetheredPosition != null)
                 {
-                    PushBoxes(grid, nextPosition, direction);
-                }
+                    if (IsLargeBoxLeft(grid, nextTetheredPosition))
+                    {
+                        if (direction == Direction.Up || direction == Direction.Down)
+                        {
+                            var currentAdjacentPosition = nextTetheredPosition.GetNextPosition(Direction.Right);
+                            //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
+                            //if (currentAdjacentPosition != updatedAdjacentPosition)
+                            //{
+                            //    PushLargeBoxes(grid, nextPosition, direction);
+                            //}
+                            PushLargeBoxes(grid, nextTetheredPosition, direction, currentAdjacentPosition);
+                            //if (nextTetheredPosition != null)
+                            //{
+                            //    PushLargeBoxes(grid, nextTetheredPosition, direction);
+                            //}
+                        }
+                        else
+                        {
+                            PushLargeBoxes(grid, nextTetheredPosition, direction);
+                        }
+                    }
 
-                if (!IsWall(grid, nextPosition) && !IsBox(grid, nextPosition) && !IsLargeBox(grid, nextPosition))
+
+                    if (IsLargeBoxRight(grid, nextTetheredPosition))
+                    {
+                        if (direction == Direction.Up || direction == Direction.Down)
+                        {
+                            var currentAdjacentPosition = nextTetheredPosition.GetNextPosition(Direction.Left);
+                            //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
+                            //if (currentAdjacentPosition != updatedAdjacentPosition)
+                            //{
+                            //    PushLargeBoxes(grid, nextPosition, direction);
+                            //}
+                            PushLargeBoxes(grid, nextTetheredPosition, direction, currentAdjacentPosition);
+                            //if (nextTetheredPosition != null)
+                            //{
+                            //    PushLargeBoxes(grid, nextTetheredPosition, direction);
+                            //}
+                        }
+                        else
+                        {
+                            PushLargeBoxes(grid, nextTetheredPosition, direction);
+                        }
+                    }
+                }
+                //if (IsBox(grid, nextPosition))
+                //{
+                //    PushLargeBoxes(grid, nextPosition, direction);
+                //}
+
+                if (!IsWall(grid, nextPosition) && (nextTetheredPosition == null || !IsWall(grid, nextTetheredPosition)) && 
+                    !IsLargeBox(grid, nextPosition) && (nextTetheredPosition == null || !IsLargeBox(grid, nextTetheredPosition)))
                 {
                     grid[nextPosition.Row, nextPosition.Column] = currentUnit;
                     grid[currentPosition.Row, currentPosition.Column] = '.';
+
+                    if (tetheredPosition != null)
+                    {
+                        grid[nextTetheredPosition.Row, nextTetheredPosition.Column] = tetheredUnit.Value;
+                        grid[tetheredPosition.Row, tetheredPosition.Column] = '.';
+                    }
+                    tetheredPosition = nextTetheredPosition;
                     currentPosition = nextPosition;
                 }
             }
