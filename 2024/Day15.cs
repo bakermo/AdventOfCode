@@ -34,6 +34,7 @@ namespace AdventOfCode._2024
             //Console.WriteLine(directionStream);
 
             var directions = new Queue<char>(directionStream);
+            Console.WriteLine("Instructions: " + directions.Count);
 
             var startPostion = grid.GetStartPositions('@').First();
             var currentPosition = startPostion;
@@ -70,8 +71,6 @@ namespace AdventOfCode._2024
 
         public string Part2(string[] input)
         {
-            //1473203 // too high
-            //return 0.ToString();
             var gridLines = new List<string>();
             var directionLines = new List<string>();
             bool isGrid = true;
@@ -85,6 +84,7 @@ namespace AdventOfCode._2024
 
                 if (isGrid)
                 {
+                   // var explodedLine = line;
                     var explodedLine = Regex.Replace(line, @"#", "##");
                     explodedLine = Regex.Replace(explodedLine, @"O", "[]");
                     explodedLine = Regex.Replace(explodedLine, @"\.", "..");
@@ -104,6 +104,7 @@ namespace AdventOfCode._2024
             Console.WriteLine(directionStream);
 
             var directions = new Queue<char>(directionStream);
+            Console.WriteLine("Instructions: " + directions.Count);
 
             var startPostion = grid.GetStartPositions('@').First();
             var currentPosition = startPostion;
@@ -129,14 +130,73 @@ namespace AdventOfCode._2024
                         break;
                 }
 
-                currentPosition = PushLargeBoxes(grid, currentPosition, direction);
+                if (CanPushLargeBoxes(grid, currentPosition, direction))
+                {
+                    currentPosition = PushLargeBoxes(grid, currentPosition, direction);
+                }
 
-              // grid.PrintGrid();
+                // grid.PrintGrid();
             }
 
             grid.PrintGrid();
 
             return GetGridScore(grid).ToString();
+        }
+
+        private bool CanPushLargeBoxes(char[,] grid, Position currentPosition, Direction direction, Position? tetheredPosition = null)
+        {
+            var currentUnit = grid[currentPosition.Row, currentPosition.Column];
+            char? tetheredUnit = null;
+
+            var nextPosition = currentPosition.GetNextPosition(direction);
+            Position nextTetheredPosition = null;
+            if (tetheredPosition != null)
+            {
+                nextTetheredPosition = tetheredPosition.GetNextPosition(direction);
+                tetheredUnit = grid[tetheredPosition.Row, tetheredPosition.Column];
+            }
+
+            bool canPush = false;
+
+            if (grid.IsInBounds(nextPosition.Row, nextPosition.Column))
+            {
+                if (!IsWall(grid, nextPosition) && (nextTetheredPosition == null || !IsWall(grid, nextTetheredPosition)) &&
+                  !IsLargeBox(grid, nextPosition) && (nextTetheredPosition == null || !IsLargeBox(grid, nextTetheredPosition)))
+                {
+                    return true;
+                }
+
+                if (IsLargeBoxLeft(grid, nextPosition))
+                {
+                    if (direction == Direction.Up || direction == Direction.Down)
+                    {
+                        var currentAdjacentPosition = nextPosition.GetNextPosition(Direction.Right);
+                        canPush = CanPushLargeBoxes(grid, nextPosition, direction) &&
+                                    CanPushLargeBoxes(grid, currentAdjacentPosition, direction);
+                    }
+                    else
+                    {
+                        canPush = CanPushLargeBoxes(grid, nextPosition, direction);
+                    }
+                }
+
+
+                if (IsLargeBoxRight(grid, nextPosition))
+                {
+                    if (direction == Direction.Up || direction == Direction.Down)
+                    {
+                        var currentAdjacentPosition = nextPosition.GetNextPosition(Direction.Left);
+                        canPush = CanPushLargeBoxes(grid, nextPosition, direction) &&
+                                    CanPushLargeBoxes(grid, currentAdjacentPosition, direction);
+                    }
+                    else
+                    {
+                        canPush = CanPushLargeBoxes(grid, nextPosition, direction);
+                    }
+                }
+            }
+
+            return canPush;
         }
 
         private Position PushLargeBoxes(char[,] grid, Position currentPosition, Direction direction, Position? tetheredPosition = null)
@@ -159,16 +219,7 @@ namespace AdventOfCode._2024
                     if (direction == Direction.Up || direction == Direction.Down)
                     {
                         var currentAdjacentPosition = nextPosition.GetNextPosition(Direction.Right);
-                        //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
-                        //if (currentAdjacentPosition != updatedAdjacentPosition)
-                        //{
-                        //    PushLargeBoxes(grid, nextPosition, direction);
-                        //}
                         PushLargeBoxes(grid, nextPosition, direction, currentAdjacentPosition);
-                        //if (nextTetheredPosition != null)
-                        //{
-                        //    PushLargeBoxes(grid, nextTetheredPosition, direction);
-                        //}
                     }
                     else
                     {
@@ -182,16 +233,7 @@ namespace AdventOfCode._2024
                     if (direction == Direction.Up || direction == Direction.Down)
                     {
                         var currentAdjacentPosition = nextPosition.GetNextPosition(Direction.Left);
-                        //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
-                        //if (currentAdjacentPosition != updatedAdjacentPosition)
-                        //{
-                        //    PushLargeBoxes(grid, nextPosition, direction);
-                        //}
                         PushLargeBoxes(grid, nextPosition, direction, currentAdjacentPosition);
-                        //if (nextTetheredPosition != null)
-                        //{
-                        //    PushLargeBoxes(grid, nextTetheredPosition, direction);
-                        //}
                     }
                     else
                     {
@@ -206,16 +248,7 @@ namespace AdventOfCode._2024
                         if (direction == Direction.Up || direction == Direction.Down)
                         {
                             var currentAdjacentPosition = nextTetheredPosition.GetNextPosition(Direction.Right);
-                            //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
-                            //if (currentAdjacentPosition != updatedAdjacentPosition)
-                            //{
-                            //    PushLargeBoxes(grid, nextPosition, direction);
-                            //}
                             PushLargeBoxes(grid, nextTetheredPosition, direction, currentAdjacentPosition);
-                            //if (nextTetheredPosition != null)
-                            //{
-                            //    PushLargeBoxes(grid, nextTetheredPosition, direction);
-                            //}
                         }
                         else
                         {
@@ -229,16 +262,7 @@ namespace AdventOfCode._2024
                         if (direction == Direction.Up || direction == Direction.Down)
                         {
                             var currentAdjacentPosition = nextTetheredPosition.GetNextPosition(Direction.Left);
-                            //var updatedAdjacentPosition = PushLargeBoxes(grid, currentAdjacentPosition, direction);
-                            //if (currentAdjacentPosition != updatedAdjacentPosition)
-                            //{
-                            //    PushLargeBoxes(grid, nextPosition, direction);
-                            //}
                             PushLargeBoxes(grid, nextTetheredPosition, direction, currentAdjacentPosition);
-                            //if (nextTetheredPosition != null)
-                            //{
-                            //    PushLargeBoxes(grid, nextTetheredPosition, direction);
-                            //}
                         }
                         else
                         {
@@ -246,10 +270,6 @@ namespace AdventOfCode._2024
                         }
                     }
                 }
-                //if (IsBox(grid, nextPosition))
-                //{
-                //    PushLargeBoxes(grid, nextPosition, direction);
-                //}
 
                 if (!IsWall(grid, nextPosition) && (nextTetheredPosition == null || !IsWall(grid, nextTetheredPosition)) && 
                     !IsLargeBox(grid, nextPosition) && (nextTetheredPosition == null || !IsLargeBox(grid, nextTetheredPosition)))
