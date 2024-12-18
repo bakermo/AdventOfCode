@@ -36,7 +36,7 @@ namespace AdventOfCode._2024
             var directions = new Queue<char>(directionStream);
             Console.WriteLine("Instructions: " + directions.Count);
 
-            var startPostion = grid.GetStartPositions('@').First();
+            var startPostion = grid.GetPositionsByValue('@').First();
             var currentPosition = startPostion;
             while (directions.Count > 0)
             {
@@ -106,7 +106,7 @@ namespace AdventOfCode._2024
             var directions = new Queue<char>(directionStream);
             Console.WriteLine("Instructions: " + directions.Count);
 
-            var startPostion = grid.GetStartPositions('@').First();
+            var startPostion = grid.GetPositionsByValue('@').First();
             var currentPosition = startPostion;
             while (directions.Count > 0)
             {

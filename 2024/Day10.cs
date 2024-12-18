@@ -13,7 +13,7 @@ namespace AdventOfCode._2024
             var grid = input.GetGrid();
             //grid.PrintGrid();
 
-            var startPositions = grid.GetStartPositions('0');
+            var startPositions = grid.GetPositionsByValue('0');
             var trailScores = 0;
 
             foreach (var position in startPositions)
@@ -35,7 +35,7 @@ namespace AdventOfCode._2024
             var grid = input.GetGrid();
             //grid.PrintGrid();
 
-            var startPositions = grid.GetStartPositions('0');
+            var startPositions = grid.GetPositionsByValue('0');
             var trailRatings = 0;
             foreach (var position in startPositions)
             {

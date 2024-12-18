@@ -111,7 +111,7 @@
             return row >= 0 && row < grid.GetLength(0) && col >= 0 && col < grid.GetLength(1);
         }
 
-        public static List<Position> GetStartPositions(this char[,] grid, char startValue)
+        public static List<Position> GetPositionsByValue(this char[,] grid, char startValue)
         {
             var positions = new List<Position>();
             for (int row = 0; row < grid.GetLength(0); row++)
