@@ -6,9 +6,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        RunMode mode = RunMode.Both;
+        RunMode mode = RunMode.Part2;
         int year = 2024;
-        int day = 18;
+        int day = 14;
         //int? day = args.Length > 0 ? int.Parse(args[0]) : (int?)null;
         bool useTest = args.Contains("-t");
 
