@@ -8,7 +8,7 @@ class Program
     {
         RunMode mode = RunMode.Both;
         int year = 2024;
-        int day = 25;
+        int day = 24;
         //int? day = args.Length > 0 ? int.Parse(args[0]) : (int?)null;
         bool useTest = args.Contains("-t");
 
